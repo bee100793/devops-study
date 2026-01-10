@@ -1,0 +1,107 @@
+    1  pwd
+    2  mkdir dental_clinic
+    3  ls
+    4  pwd
+    5  ls
+    6  cd dental_clinic/
+    7  pwd
+    8  ls
+    9  ls -s
+   10  ls -l
+   11  mkdir 01_periodontics 02_conservative 03_prosthodontics 04_surgery 05_oral medicine 06_esthetics 
+   12  ls
+   13  mv 05_oral 05_oral_medicine
+   14  ls
+   15  rm medicine
+   16  rm -r medicine
+   17  ls
+   18  cd 01_periodontics/
+   19  touch scaling curettage
+   20  ls
+   21  cd ..
+   22  cd 02_conservative/
+   23  touch resin endo
+   24  mkdir inlay
+   25  ls
+   26  cd ..
+   27  cd 03_prosthodontics/
+   28  mkdir crown
+   29  ls
+   30  cd ..
+   31  cd 04_surgery/
+   32  touch implant alveoloplasty
+   33  ls
+   34  cd ..
+   35  cd 05_oral_medicine/
+   36  touch TMJ botox
+   37  ls
+   38  cd ..
+   39  cd 06_esthetics/
+   40  touch laminate whitening
+   41  ls
+   42  cd ..
+   43  ls -R
+   44  cd 02_conservative/
+   45  cd inlay
+   46  touch gold emax resin 
+   47  ls
+   48  cd .. ..
+   49  cd ..
+   50  cd 03_prosthodontics/
+   51  cd crown
+   52  touch gold zirconia pfm
+   53  ls
+   54  cd ~
+   55  cd dental_clinic/
+   56  ls -R
+   57  cd 06_esthetics/
+   58  cd ..
+   59  cd 05_oral_medicine/
+   60  mv botox ../ 06_esthetics
+   61  mv botox ../06_esthetics/
+   62  ls
+   63  cd ../06_esthetics/
+   64  ls
+   65  mv botox ../05_oral_medicine/
+   66  ls
+   67  cd ../05_oral_medicine/
+   68  ls
+   69  cd ..
+   70  ls -R
+   71  tree
+   72  cd 05_oral_medicine/cp botox face_botox
+   73  cd 05_oral_medicine/&& cp botox face_botox
+   74  ls
+   75  cp face_botox 06_esthetic/face-PDRN
+   76  cp face_botox 06_esthetics
+   77  ls
+   78  cp face_botox 06_esthetics/face-PDRN
+   79  cp face_botox 06_esthetics /face
+   80  ls
+   81  rm 06_esthetics 
+   82  ls
+   83  cp face_botox ../06_esthetics/face
+   84  ls
+   85  cd ..
+   86  cd 06_esthetics/
+   87  ls
+   88  cd ..
+   89  cd 05_oral_medicine/
+   90  mv face_botox ../06_esthetics/
+   91  ls
+   92  cd ..
+   93  cd 06_esthetics/
+   94  ls
+   95  rm face
+   96  ls
+   97  sudo apt-get update
+   98  sudo apt-get install tree
+   99  tree
+  100  cd ~/dental_clinic/
+  101  tree
+  102  nano
+  103  cd 01_periodontics/scaling
+  104  cd 01_periodontics/ && nano scaling
+  105  tail scaling 
+  106  cd ~/dental_clinic/
+  107  history >> today_history_26.01.10
