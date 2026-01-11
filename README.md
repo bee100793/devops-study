@@ -56,7 +56,7 @@
 - [x] **Day 3 (1/7 수):** [실습] 파일/폴더 조작 (mkdir, touch, rm, cp, mv) 🔥
 - [x] **Day 4 (1/8 목):** [실습] nano 편집과  파일 내용 보기 (cat, head, tail, less)
 - [x] **Day 5 (1/9 금):** [실습] 관리자 권한 (sudo) 이해하기 & package manager (apt)
-- [x] **Day 6 (1/10 토):** [복습] 1주차 명령어 총정리
+- [x] **Day 6 (1/10 토):** [복습] 1주차 명령어 총정리   [1주차 복습노트](docs/week_01_리눅스기본정리.md)
 - [ ] **Day 7 (1/11 일):** 휴식 🛌
 
 #### Week 2: 편집 & 검색 & 압축 (1/12 ~ 1/18)
@@ -88,12 +88,29 @@
 - [ ] **Day 26 (1/30 금):** [실습] 나만의 index.html 페이지 만들기
 - [ ] **Day 27 (1/31 토):** [졸업] 고정 IP(Elastic IP) 연결 & 최종 회고 🍗
 
----
 
-| Date | Topic | Status |
-|:---:|:---|:---:|
-| 2026.01.05 | Day 1: GitHub & WSL Setup | ✅ Done |
-| 2026.01.06 | Day 2: Linux Concept | ⏳ |
-| ... | ... | ... |
+
+
+
+
+--------------------------------------------------------------------------------------
+# 🦷 Dental Clinic File System Project 26.01.11 
+    
+
+## 1. 프로젝트 개요
+리눅스 터미널 명령어를 사용하여 병원(치과)의 진료 데이터를 관리하는 폴더 구조를 구축하는 실습입니다.
+[Dental Clinic 실습 폴더 보기](dental_clinic)
+## 2. 사용한 기술
+- **OS:** Linux (Ubuntu)
+- **Tool:** Git, GitHub
+- **Commands:** `mkdir`, `touch`, `cp`, `mv`, `rm`,`tree`
+
+## 3. 트러블 슈팅 (문제 해결) ✨
+실습 중 깃허브 업로드 시 `Authentication failed` 에러가 발생했습니다.
+비밀번호 대신 **Personal Access Token**을 사용해야 함을 알게 되었고,
+`git remote set-url` 명령어를 통해 인증 정보를 업데이트하여 해결했습니다.
+
+## 4. 학습 소감
+GUI없이 터미널로만 파일을 생성 및 정리하는 법을 익혔으며, 깃허브와의 연동 과정을 완벽하게 이해했습니다.
 
 ---
