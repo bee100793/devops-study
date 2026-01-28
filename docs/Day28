@@ -1,0 +1,86 @@
+# 📅 Day 16: AWS 웹 서버 구축과 트러블 슈팅 대장정 (26.01.28)
+
+**학습 목표:**
+1. AWS EC2에 Nginx 웹 서버를 구축하여 외부 접속을 성공시킨다.
+2. 탄력적 IP(Elastic IP)와 보안 그룹(Security Group)의 개념을 익힌다.
+3. 리눅스 파일 권한 관리와 삭제된 파일 복구, 패키지 완전 삭제(Purge)를 경험한다.
+4. SSH Config를 설정하여 서버 접속 효율을 극대화한다.
+
+---
+
+🚀 1. 네트워크 및 서버 기초 공사
+
+### ① 탄력적 IP (Elastic IP- AWS용 고정IP)
+* **문제:** EC2의 기본 공용 IP는 인스턴스를 중지/재부팅하면 변경됨(유동 IP).
+* **해결:** **탄력적 IP(Elastic IP)**를 할당받아 인스턴스에 고정 연결함.
+* **주의:** 서버에 연결하지 않고 방치하면 비용이 발생함. 서버 없앨때도 무조건 반납해야함!!!!!!
+
+### ② 보안 그룹 (Security Group-port 설정)
+* **문제:** Nginx를 설치해도 외부에서 접속이 안 됨.
+* **원인:** AWS 방화벽이 기본적으로 SSH(22번) 외의 문을 닫아둠.
+* **해결:** 인바운드 규칙에서 **HTTP(80번) 포트**를 `Anywhere (0.0.0.0/0)`로 개방.
+
+---
+
+🛠️ 2. 웹 서버 구축과 권한 관리 (입주청소와 가게 열기)
+
+### ① Nginx 설치
+```bash
+입주청소 : sudo apt update
+가게 열기 : sudo apt install nginx -y
+가게 상태확인 : sudo systemctl status nginx 
+
+② 파일 소유권 변경 (Permission)
+문제: /var/www/html 폴더가 root 소유라 파일 수정/Git 관리가 번거로움.
+해결: chown 명령어로 소유권을 현재 사용자(ubuntu)로 변경.
+sudo chown -R ubuntu:ubuntu /var/www/html
+깨달음: 무작정 권한을 다 푸는(chmod 777) 것보다, 소유권을 가져오는 것이 보안상 안전하다. but 여전히 문제는 있다. 
+
+🚨 3. 트러블 슈팅: 삭제와 복구 
+상황: index.html을 수정하다가 설정이 꼬였고, 복구 시도 중 실수로 원본 파일을 삭제함.
+
+① 재설치 시도와 실패
+sudo apt install --reinstall nginx: 실행 파일만 교체될 뿐, 꼬인 설정 파일(Config)은 그대로 남음. (해결 실패)
+
+② 완전 삭제(Purge) 후 재설치 (성공)
+해결: purge 명령어로 설정 파일까지 싹 밀어버리는 '공장 초기화' 수행.
+
+# 1. 완전 삭제
+sudo apt purge nginx nginx-common nginx-core -y
+sudo apt autoremove -y
+
+# 2. 재설치
+sudo apt install nginx -y
+③ 파일 수동 복구
+리눅스에는 '휴지통'이 없음을 체감. echo 명령어로 임시 페이지 생성하여 복구.
+
+### 깨달음 ###
+ 문제가 생겨서 꼬이면 복잡해지니까 중요한건 무조건 CP 해두거나 , git commit 해 두자!!
+
+
+⚡ 4. 업무 효율화: SSH 간편 접속 (SSH Config)
+문제: 매번 ssh -i my_key.pem ubuntu@13.124.xxx... 처럼 긴 명령어를 치는 것이 비효율적.
+해결: ~/.ssh/config 파일을 작성하여 단축키처럼 접속하도록 설정.
+
+설정 방법:
+1.키 파일을 ~/.ssh/ 폴더로 이동 및 권한 설정(chmod 400).
+
+2.~/.ssh/config 파일 작성:
+Host myweb
+    HostName [탄력적 IP]
+    User ubuntu
+    IdentityFile ~/.ssh/my_key.pem
+
+결과: ssh myweb 명령어 하나로 즉시 접속 성공.
+
+💡 오늘의 회고
+리눅스는 냉정하다: rm 명령어는 되돌릴 수 없다. cp백업과 Git의 소중함을 뼈저리게 느꼈다.
+
+IP의 종류: 공용 IP는 '호텔 방(임시)', 탄력적 IP는 '내 명패(고정)'와 같다는 비유로 개념을 확실히 잡았다.
+
+효율성 추구: 반복되는 작업(SSH 접속)은 반드시 자동화하거나 단축하는 방법이 있다. (Config 설정)
+
+---
+
+
+
