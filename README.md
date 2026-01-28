@@ -83,9 +83,9 @@
 실제 클라우드 서버(EC2)를 띄우고 웹 서버(Nginx)를 배포합니다.
 - [x] **Day 22 (1/26 월):** [설정] AWS 계정 생성 & MFA 보안 설정 [Day26 study](docs/Day26)
 - [x] **Day 23 (1/27 화):** [개념] EC2 인스턴스란? EC2 생성 & 키페어(.pem) 발급 🔥[Day27 study](docs/Day27)
-- [ ] **Day 24 (1/28 수):** [실습] 
-- [ ] **Day 25 (1/29 목):** [실습] 웹 서버(Nginx) 설치 & 방화벽(Security Group) 설정
-- [ ] **Day 26 (1/30 금):** [실습] 나만의 index.html 페이지 만들기
+- [x] **Day 24 (1/28 수):** [실습] 웹 서버(Nginx) 설치 & 방화벽(Security Group) 설정[Day28 study](docs/Day28)
+- [ ] **Day 25 (1/29 목):** [실습] 나만의 index.html 페이지 만들고,친구초대하기 
+- [ ] **Day 26 (1/30 금):** [실습] 
 - [ ] **Day 27 (1/31 토):** [졸업] 고정 IP(Elastic IP) 연결 & 최종 회고 🍗
 
 
