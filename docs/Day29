@@ -1,0 +1,37 @@
+# 📅 Day 17: 웹사이트 실전 배포와 개발자 작업 루틴 (26.01.29)
+
+**학습 목표:**
+1. 무료 템플릿(HTML5 UP)을 사용하여 웹 서버에 '진짜 웹사이트'를 배포한다.
+2. 리눅스 파일 시스템(`~` vs `/var`)의 역할 차이를 이해한다.
+3. 작업 폴더(Workspace)와 Git 브랜치(Branch)를 활용한 안전한 작업 루틴을 구축한다.
+
+---
+
+## 🏗️ 1. 개발자의 작업 환경 구축 (Workflow)
+ 
+① 작업실 만들기 (Workspace)
+* **문제:** 홈 디렉터리(`~`)에 다운로드 파일과 소스 코드가 뒤섞이면 관리가 어려움.
+* **해결:** `workspace`라는 전용 작업 폴더를 생성하여 '작업 공간'과 '생활 공간'을 분리함.
+
+② 안전하게 실험하기 (Git Branch)개념: 원본(main)을 직접 수정하는 것은 위험함. '실험용 평행우주'인 브랜치를 따서 작업하는 것이 정석.
+
+ - 1. 실험용 브랜치 생성 및 이동
+    git switch -c design-change
+
+ -2. (작업 후) 마음에 들면 원본에 합치기
+   git switch main
+   git merge design-change
+
+🎨 2. 외부 템플릿 가져오기 (Git Clone)
+  ① 오픈소스 디자인 확보GitHub에 있는 HTML5 UP 템플릿 모음집을 내 작업실로 가져옴.
+      wget은 파일 하나를 받을 때, git clone은 프로젝트 통째로 받을 때 유리함.
+                                git clone [https://github.com/zce/html5up.git](https://github.com/zce/html5up.git)
+② 원하는 디자인 선별다운로드한 모음집 중에서 identity 테마를 선택하여 적용하기로 결정.
+
+🚀 3. 배포 (Deployment)"작업실에서 완성된 것만 전시장(/var) 으로 옮긴다.
+    ① 전시장 청소 및 배포Nginx의 기본 경로인 /var/www/html을 비우고, 새 디자인 파일을 복사함.
+    # 1. 기존 파일 삭제 (청소)
+     sudo rm -rf /var/www/html/*
+
+    # 2. 새 디자인 파일 복사 (이사) . 작업실의 identity 폴더 내용을 서버 경로로 복사
+    sudo cp -r ~/workspace/html5up/identity/* /var/www/html/
