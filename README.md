@@ -166,3 +166,73 @@ Step 6: 뒤처리
 
 4. 학습 소감
 단순히 명령어를 외우는 것을 넘어, '왜(Why)' 이렇게 사용하는지에 대한 엔지니어의 관점을 익혔습니다. 특히 **"Main 브랜치는 신성한 제품이므로, 작업은 브랜치(연습장)에서 수행하고 합친다"**는 협업의 대원칙을 완벽하게 이해했습니다. 터미널 환경에서 grep으로 데이터를 다루고 chmod로 보안을 설정하는 과정에서 CLI에 대한 자신감을 얻었습니다.
+
+-------------------------------------------------------------------------------------
+
+# 🔥 Phoenix Project: Server Recovery & Deployment (26.01.31)
+
+## 1. 프로젝트 개요
+"신입사원의 실수로 초기화된 서버를 복구하라!" 가상의 재해 상황(Disaster Recovery)을 설정하여, 운영체제(OS) 내의 모든 웹 서버 설정을 완전 삭제(Purge) 후, 바닥부터 다시 구축(Rebuild)하고 웹사이트를 **배포(Deploy)**하는 실습입니다.
+
+## 2. 사용한 기술
+Infrastructure: AWS EC2 (Ubuntu 24.04 LTS)
+
+Web Server: Nginx
+
+Version Control: Git, GitHub
+
+Commands: apt purge , autoremove , chown , systemctl , curl , git branch
+
+## 3. 주요 작업 내용 (Reconstruction)
+① 서버 완전 초기화 (Destruction)
+단순 삭제가 아닌 설정 파일까지 제거하는 공장 초기화를 수행했습니다.
+
+Bash
+sudo apt purge nginx nginx-common nginx-core -y
+sudo apt autoremove -y
+sudo rm -rf /var/www/html
+② 권한 재설정 및 복구 (Permission)
+root 계정 소유의 웹 디렉터리 권한을 ubuntu 사용자로 가져와 생산성을 높였습니다.
+
+Bash
+sudo chown -R ubuntu:ubuntu /var/www/html
+③ Git 브랜치 전략 (Git Flow)
+메인 코드 보호를 위해 별도 브랜치에서 작업 후 병합하는 방식을 적용했습니다.
+
+Bash
+git checkout -b feature/title-edit
+git merge feature/title-edit
+
+## 4. 트러블 슈팅 (문제 해결) ✨
+실습 중 발생한 3가지 핵심 에러와 해결 과정입니다.
+
+🚨 Issue 1: Git 브랜치가 보이지 않음
+문제: git init 직후 git branch 명령어가 먹통이 됨.
+원인: Git은 첫 번째 커밋(Commit)이 생성되기 전까지는 main 브랜치가 생성되지 않음 (Unborn Branch).
+해결: git commit -m "Initial commit" 으로 첫 기록을 남겨 브랜치를 생성함.
+
+🚨 Issue 2: 외부 접속 차단 
+문제: 브라우저에서 탄력적 IP로 접속 시 사이트가 뜨지 않음.
+진단: 터미널 내부에서 curl localhost 실행 시 HTML 코드가 정상 출력됨을 확인. -> 서버는 정상, 네트워크 문제로 판단.
+해결: AWS 보안 그룹(Security Group) 설정을 확인하고 조치함.
+
+🚨 Issue 3: 웹 서버 실시간 반영 및 효율적 관리
+문제:/var/www/html에 있는 파일을 직접 수정해서 git 을 하려니 전시장에서는 git을 할수 없어 다시 작업실로 옮겨야 했음.
+진단:작업실(~/workspace)과 전시장(/var/www/html)이 분리되어 있어 매번 복사(cp)하는 과정에서 누락이나 실수 발생 가능성 높음.
+해결 : 폴더 심볼릭 링크(Symbolic Link) 설정  
+작업실과 전시장을 실시간으로 연결하여 복사 과정 생략.
+
+ 1. 기존 전시장 폴더 백업
+sudo mv /var/www/html /var/www/html_backup
+
+ 2. 내 작업 폴더를 전시장 이름(html)으로 연결 (마법의 터널)
+ 3.  ln -s [원본폴더경로] [연결할이름]
+sudo ln -s /home/ubuntu/my-project /var/www/html
+ 4. 혹시나 권한으로 외부인이 못보면 권한 수정
+chmod +x /home/ubuntu
+chmod +x /home/ubuntu/my-projec
+
+## 5. 학습 소감
+컴퓨터가 바뀌어도 **Git과 키 파일(.pem)**만 있다면 어디서든 서버를 제어할 수 있음을 확인했습니다. 혹시 키를 못쓴다면, AWS 사이트에서 인스턴스를 직접 열어서 사용 하는 법을 알아서 급하게 연습할때 좋았습니다.
+오늘은 정말 배운것이 많은데 확실히 처음부터 쭉 수정까지 다 이어서 하니까 생각 치도 못한 문제들이 많이 발생했습니다.  수정을 위해서 git branch 를 하려고 하니 그것부터 막혀서 처음엔 commit 을 해야 한다는 걸 알았고. 
+강력한 새로고침 (ctrl+shift+r)을 몰랐어서 시간을 다 버릴뻔 했는데 다행이었습니다. 그리고 수정 후 에도 git marge 해야하는데 전시장에서는 못한다는걸 뒤늦게 인지해서 하나하나 옮길 생각에 끔찍했는데 다행히 링크라는 걸 알아서 포기하지 않고  계속할수 있었습니다. 
