@@ -86,7 +86,7 @@
 - [x] **Day 24 (1/28 수):** [실습] 웹 서버(Nginx) 설치 & 방화벽(Security Group) 설정[Day28 study](docs/Day28)
 - [x] **Day 25 (1/29 목):** [실습] 나만의 index.html 페이지 만들고,친구초대하기 [Day29 study](docs/Day29)
 - [x] **Day 26 (1/30 금):** [실습] 서버 상태 변경 & AMI 백업해보기 & 도메인 걸기 [Day30 study](docs/Day30)
-- [ ] **Day 27 (1/31 토):** [졸업] 고정 IP(Elastic IP) 연결 & 최종 회고 🍗
+- [x] **Day 27 (1/31 토):** [졸업] 서버만들기 실습 & 최종 회고 🍗
 
 
 
