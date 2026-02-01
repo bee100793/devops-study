@@ -169,9 +169,9 @@ Step 6: 뒤처리
 
 -------------------------------------------------------------------------------------
 
-# 🔥 Phoenix Project: Server Recovery & Deployment (26.01.31)
+# 🔥 Phoenix Project: Server Recovery & Deployment (26.01.31) 
 
-## 1. 프로젝트 개요
+## 1. 프로젝트 개요  [실습3 보기 ](html5up/forty)
 "신입사원의 실수로 초기화된 서버를 복구하라!" 가상의 재해 상황(Disaster Recovery)을 설정하여, 운영체제(OS) 내의 모든 웹 서버 설정을 완전 삭제(Purge) 후, 바닥부터 다시 구축(Rebuild)하고 웹사이트를 **배포(Deploy)**하는 실습입니다.
 
 ## 2. 사용한 기술
