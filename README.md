@@ -113,7 +113,7 @@
 - [x] **Day 9:** 텍스트 처리 2 (`awk` 맛보기) - 로그에서 특정 데이터(IP 등) 추출[Day40](docs/Day40)
 - [x] **Day 10:** 스케줄링 (`crontab`) - 정기적인 백업 및 스크립트 실행[Day41](docs/Day41)
 - [x] **Day 11:** 알림 발송 (`curl`) - 작업 결과/장애 발생 시 Slack/Discord 알림 전송[Day42](docs/Day42)
-- [ ] **Day 12:** [Mini Project] 로그 로테이션 & 디스크 청소 자동화
+- [x] **Day 12:** [Mini Project] 로그 모니터링 쉘 만들고 알림설정하기 
 - [ ] **Day 13~14:** 2주차 중간 점검
 
 #### 🚧 Week 3: 실전 DevOps 배포 (Deploy & Provisioning)
@@ -345,3 +345,32 @@ Scripting: Bash Shell Script (if, for, tar, )
 오늘 특히나 깨달은게 있는데 그건 바로 안정성 입니다. 
  따옴표(" ") 로 혹시 모르는 공백에러 등을 방지 하고, 혹시나 폴더가 없어졌을 경우를 대비해서 -d 옵션으로 이중체크 하는 것을 보면서 데브옵스가 효율성만큼이나 조금은 귀찮을 지라도 안정성을 지키는게 중요하다는걸 깨달았습니다.
  나중에 결과를 봤을때 뭔가 한눈에 이해하기가 어렵다고 느껴서 앞으로는 한눈에 무슨 과정을 하고 어떤 상태인지 보기 좋게 써줘야 겠습니다.
+
+ -------------------------------------------------------------------------
+# 프로젝트 이름: Lightweight Log Monitor (Shell Script)
+## 1. 프로젝트 개요
+서버 로그(server.log)를 실시간으로 감시하여 특정 키워드(Error) 발생 시 디스코드(Discord)로 즉시 알림을 보내는 셸 스크립트입니다.
+
+## 2. 핵심 해결 과제 (Troubleshooting)
+기존의 단순 grep 방식은 파일 전체를 읽기 때문에 이미 알림을 보낸 에러를 중복해서 보고하는 문제가 있었습니다. 이를 해결하기 위해 데이터의 '상태(State)'를 기억하는 로직을 도입했습니다.
+문제점: 1분마다 실행될 때마다 기존 에러를 계속 읽어 알림 지옥 발생.
+해결책: diff 명령어를 사용하여 **"지난번 검사 이후에 새로 추가된 줄"**만 추출하여 검사함.
+
+## 3. 주요 기능
+Incremental Monitoring: diff의 --changed-group-format 옵션을 활용해 신규 로그만 필터링.
+Context Preservation: 원본 로그 파일을 삭제하거나 수정하지 않고 그대로 보존.
+Rich Notification: 에러가 발생한 줄의 내용을 디스코드의 Code Block 형식으로 가공하여 전송.
+Auto Cleanup: 임시 파일을 자동으로 비워 디스크 용량 관리 및 보안 유지.
+
+## 4. 스크립트 구조 및 원리
+Bash
+ 1. 이전 로그 상태(old_server.log)와 현재 상태 비교
+ 2. 신규 추가된 라인에서만 'error' 키워드 추출
+ 3. 에러 발견 시 변수에 담아 Webhook 전송
+ 4. 현재 로그를 다음 검사를 위한 '과거 상태'로 업데이트
+ 
+## 5. 사용 기술 (Stack)
+Language: Shell Script (Bash)
+Tools: diff, grep, curl, crontab
+
+Platform: Discord Webhook API
