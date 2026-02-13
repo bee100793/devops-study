@@ -113,7 +113,7 @@
 - [x] **Day 9:** 텍스트 처리 2 (`awk` 맛보기) - 로그에서 특정 데이터(IP 등) 추출[Day40](docs/Day40)
 - [x] **Day 10:** 스케줄링 (`crontab`) - 정기적인 백업 및 스크립트 실행[Day41](docs/Day41)
 - [x] **Day 11:** 알림 발송 (`curl`) - 작업 결과/장애 발생 시 Slack/Discord 알림 전송[Day42](docs/Day42)
-- [x] **Day 12:** [Mini Project] 로그 모니터링 쉘 만들고 알림설정하기 
+- [x] **Day 12:** [Mini Project] 로그 모니터링 쉘 만들고 알림설정하기 [log_mornitor.sh](~/Mission-log_mornitor.sh)
 - [ ] **Day 13~14:** 2주차 중간 점검
 
 #### 🚧 Week 3: 실전 DevOps 배포 (Deploy & Provisioning)
@@ -347,7 +347,7 @@ Scripting: Bash Shell Script (if, for, tar, )
  나중에 결과를 봤을때 뭔가 한눈에 이해하기가 어렵다고 느껴서 앞으로는 한눈에 무슨 과정을 하고 어떤 상태인지 보기 좋게 써줘야 겠습니다.
 
  -------------------------------------------------------------------------
-# 프로젝트 이름: Lightweight Log Monitor (Shell Script)
+# 프로젝트 이름: Lightweight Log Monitor (Shell Script) [log_mornitor.sh](~/Mission-log_mornitor.sh)
 ## 1. 프로젝트 개요
 서버 로그(server.log)를 실시간으로 감시하여 특정 키워드(Error) 발생 시 디스코드(Discord)로 즉시 알림을 보내는 셸 스크립트입니다.
 
