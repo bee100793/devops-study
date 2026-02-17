@@ -1,0 +1,68 @@
+# [Day 15~16] AWS 클라우드 서버 재구축 및 셸 스크립트를 활용한 원격 세팅 자동화
+
+## 🎯 학습 목표
+- AWS EC2 인스턴스 환경 최적화 및 탄력적 IP(EIP) 연결
+- SSH 원격 접속 시 발생하는 권한 및 지문 충돌 에러 트러블슈팅
+- `scp`를 활용한 로컬-원격 간 파일 전송
+- 셸 스크립트와 표준 입출력 제어를 활용한 서버 초기 환경 무인 세팅
+
+---
+
+## 🛠️ 1. 핵심 트러블슈팅 (Troubleshooting)
+
+### Issue 1. SSH 접속 시 `Permission denied (publickey)` 에러
+- **원인 분석:** 인스턴스 생성 시 선택한 OS(Amazon Linux vs Ubuntu)에 따라 기본 로그인 계정(`ec2-user` vs `ubuntu`)이 다름. 계정 이름 불일치로 인해 정상적인 Key 인증이 거부됨.
+- **해결 및 인사이트:** - 접속 계정을 OS에 맞게 수정하여 원인 파악 완료.
+  - 학습 환경 통일을 위해 기존 인스턴스를 폐기(Terminate)하고, 우분투(Ubuntu 24.04 LTS x86) OS로 새 인스턴스를 깔끔하게 재구축.
+  - 클라우드 인프라에서는 서버가 꼬였을 때 복잡하게 수리하기보다, 원본 이미지를 바탕으로 새롭게 다시 배포하는 것이 훨씬 효율적임을 체감함.
+
+### Issue 2. 접속 시 `WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!` 에러
+- **원인 분석:** 동일한 IP 주소(탄력적 IP)에 새로운 서버가 연결되면서, 로컬 PC(`~/.ssh/known_hosts`)에 저장되어 있던 예전 서버의 지문(Fingerprint)과 새 서버의 지문이 충돌하여 보안 경고 발생.
+- **해결:**
+  ```bash
+  ssh-keygen -f '/home/계정명/.ssh/known_hosts' -R 'IP주소'
+기존에 등록된 서버 지문을 삭제한 뒤, 다시 접속하여 새로운 서버의 지문을 정상적으로 등록 완료.
+
+
+🚀 2. 원격 파일 전송 (scp) 및 SSH Config 단축화
+~/.ssh/config 파일에 Host 정보(server), IP, 계정(ubuntu), Key 경로를 미리 세팅하여 접속 및 전송 명령어를 극적으로 단축함.
+
+주요 명령어 정리:
+
+로컬에서 서버로 파일 보내기:
+
+Bash
+scp error_check.sh server:~/
+서버에서 로컬(현재 위치 .)로 파일 가져오기:
+
+Bash
+scp server:~/error_check.sh .
+⚙️ 3. 서버 초기 세팅 무인 자동화 (Provisioning)
+깡통 상태의 새 서버에 매번 접속해 프로그램을 설치하는 대신, 로컬에서 스크립트를 작성해 원격으로 실행시키는 자동화 흐름을 구축함.
+
+자동화 스크립트 작성 (init_setup.sh)
+> /dev/null 2>&1을 활용하여 시스템의 정상 출력(1)과 에러 출력(2)을 모두 블랙홀(/dev/null)로 보내어, 터미널 화면에는 지저분한 설치 로그 대신 내가 지정한 echo 메시지만 깔끔하게 나오도록 제어함.
+
+Bash
+#!/bin/bash
+echo "=== 서버 초기 세팅을 시작합니다 ==="
+
+# 패키지 목록 업데이트 (설치 로그 숨김 처리)
+sudo apt-get update -y > /dev/null 2>&1
+
+echo "== 목록 업데이트를 실행합니다 =="
+
+# 필수 도구 설치 (vim, tree, curl)
+sudo apt-get install -y vim tree curl > /dev/null 2>&1
+
+echo "=== 세팅이 완료 되었습니다(vim, tree, curl) ==="
+원격 실행
+스크립트를 서버로 전송한 뒤, 서버에 직접 로그인하지 않고 로컬에서 아래 명령어를 던져 스크립트를 실행시킴.
+
+Bash
+scp init_setup.sh server:~/
+ssh server "bash ~/init_setup.sh"
+
+
+💡 오늘의 회고
+오늘 scp 와 ssh 를 사용 하여 내 터미널에서 서버로 보내는 실습을 했는데 굉장히 유용했다. 사실 서버라는게 하나가 아닌데 쉘을 아무리 만들어도 일일이 들어가서 작동하는게 비효율적이라고 생각하고 있었는데 아주 좋은기술을 배웠다. 
