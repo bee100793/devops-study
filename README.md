@@ -119,8 +119,8 @@
 #### 🚧 Week 3: 실전 DevOps 배포 (Deploy & Provisioning)
 **목표:** "원격 제어와 배포 자동화 구현 (Final)"
 
-- [ ] **Day 15:** 원격 제어 (`ssh`/`scp`) - 로컬에서 원격 서버 명령 내리기
-- [ ] **Day 16:** 프로비저닝 (Setup) - `apt-get` 등을 활용한 환경설정 자동화
+- [x] **Day 15:** 원격 제어 (`ssh`/`scp`) - 로컬에서 원격 서버 명령 내리기[Day45](docs/Day15-16)
+- [x] **Day 16:** 프로비저닝 (Setup) - `apt-get` 등을 활용한 환경설정 자동화
 - [ ] **Day 17:** Git 연동 - `git pull` 자동화 및 충돌 방지 로직
 - [ ] **Day 18:** Docker 제어 - 컨테이너 상태 확인 및 재기동 스크립트
 - [ ] **Day 19:** **[Final Project] 원클릭 배포 스크립트 (`deploy.sh`) 완성**
