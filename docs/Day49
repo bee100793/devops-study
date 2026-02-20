@@ -1,0 +1,65 @@
+# 📝 [2026-02-20] DevOps 실무: Docker를 이용한 자동 배포 구축
+
+## 1. 이론 정리
+
+### 🚚 배포(Deployment)란 무엇인가?
+* **정의**: 개발자가 개인 로컬 환경(노트북)에서 만든 코드와 설정 파일들을 실제 사용자가 접속할 수 있는 운영 서버(AWS 등)에 반영하여 서비스를 가동하는 전체 과정입니다.
+* **핵심**: 단순한 파일 복사를 넘어 **서버 환경 세팅, 의존성 설치, 프로세스 관리**를 모두 포함하는 개념입니다.
+
+### 📦 왜 굳이 '컨테이너(Docker)'로 배포하는가?
+* **환경 일관성**: "내 컴퓨터에선 되는데 서버에선 안 돼요"라는 문제를 해결합니다. 환경을 컨테이너 안에 격리하여 어디서든 동일하게 작동하게 합니다.
+* **격리 및 안전**: 서버에 설치된 다른 프로그램들과의 충돌을 방지합니다.
+* **교체의 용이성**: 업데이트 시 기존 컨테이너를 삭제하고 새 버전을 띄우는 것만으로 배포가 완료되어 매우 빠르고 단순합니다.
+
+### 🏢 실무 배포 흐름 (Git 기반)
+1. **Local (노트북)**: 코드 수정 및 `Dockerfile`, `deploy.sh` 작성 후 GitHub로 `push`.
+2. **GitHub**: 소스 코드 및 배포 설정의 중앙 저장소 역할을 수행.
+3. **Remote (AWS 서버)**: 서버에서 `git pull`로 최신 코드를 내려받은 뒤 배포 스크립트 실행.
+
+---
+
+## 2. 실습 기록 (배포 자동화 스크립트)
+
+### 📄 Dockerfile
+```dockerfile
+# 베이스 이미지 설정
+FROM nginx:latest
+
+# 로컬의 index.html을 컨테이너 내부의 Nginx 웹 경로로 복사
+COPY index.html /usr/share/nginx/html/index.html
+
+#!/bin/bash
+
+echo "== 1. 기존 컨테이너를 제거합니다 =="
+# -f(force) 옵션으로 실행 중인 컨테이너도 강제 삭제
+docker rm -f my_web 2>/dev/null
+
+echo "== 2. 새로운 도커 이미지를 빌드합니다 =="
+# 현재 경로(.)의 Dockerfile을 사용하여 이미지 빌드
+docker build -t my-web-image .
+
+echo "== 3. 새로운 도커 컨테이너를 실행합니다 =="
+# 호스트 8080 포트를 컨테이너 80 포트에 연결
+docker run -d -p 8080:80 --name my_web my-web-image
+
+echo "== 모든 배포 과정이 끝났습니다 =="
+docker ps
+
+
+### 3. 도커 이미지 관련 주요 명령어
+* `docker build -t [이미지명] .` : 현재 폴더의 Dockerfile로 이미지 생성
+* `docker images` : 보유 중인 도커 이미지 목록 확인
+* `docker rmi [이미지ID/명]` : 특정 이미지 삭제
+* `docker pull [이미지명]` : 도커 허브(Docker Hub)에서 이미지 다운로드
+
+---
+
+### 4. 트러블슈팅 (Troubleshooting)
+
+| 문제 상황 (Error) | 원인 (Cause) | 해결 방법 (Solution) |
+| :--- | :--- | :--- |
+| **non-fast-forward (push 실패)** | 원격 저장소와 로컬의 커밋 히스토리가 일치하지 않음 | `git config pull.rebase false` 설정 후 `git pull` 수행 |
+| **unknown shorthand flag: 'r' in -rf** | `docker rm` 명령어에는 `-r` 옵션이 존재하지 않음 | `docker rm -f`로 수정하여 강제 삭제 처리 |
+| **Conflict. /my_web is already in use** | 이전 삭제 단계 실패로 동일 이름의 컨테이너가 잔존함 | 삭제 명령(`rm -f`) 오타 수정 후 스크립트 재실행 |
+| **cp {a, b} No such file...** | 중괄호 확장 문법 내 쉼표 뒤에 공백이 포함됨 | `{file1,file2}`와 같이 공백 없이 붙여서 작성 |
+| **git pull 시 merge 에러** | 서버 로컬 수정분과 원격 저장소 내용이 충돌함 | `git checkout .`으로 로컬 변경분 폐기 후 `pull` 재시도 |
