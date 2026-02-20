@@ -6,14 +6,14 @@
   #1. 기존 컨테이너등 지우기 
    echo "==기존 컨테이너를 지웁니다 ===" 
 
-   docker rm -rf my_web
+   docker rm -f my_web
  
 
   #2. 깃허브에서 새로운 재료 가져오기  
 
-   echo " 새로운 코드등을 가져옵니다"
+  # echo " 새로운 코드등을 가져옵니다"
 
-   git pull origin main 
+  # git pull origin main 
 
   
   #3. 새로 가져온 재료를 비날에 포장합니다 
