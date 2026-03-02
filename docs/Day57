@@ -1,0 +1,49 @@
+📅 2026년 3월 2일 학습 기록
+주제: 파이썬 파일 다루기 (열고, 쓰고, 닫기)
+1. 오늘의 목표 🎯
+파이썬을 이용해 텍스트 파일을 생성하고 내용을 기록하는 다양한 방법 익히기
+
+파일 열기(open)와 닫기(close)의 중요성 이해 및 자동화 방식(with) 습득
+
+2. 학습한 실습 코드 💻
+❶ 수동 방식 (직접 열고 닫기)
+알바생에게 장부를 주면서 "다 쓰면 꼭 덮어둬!"라고 직접 당부하는 방식입니다.
+
+Python
+# [방법 A] print 함수를 이용해 배송지(file)를 장부로 지정하기
+a_file = open("수동p.txt", "w", encoding="utf8")
+print("내용", file=a_file)
+a_file.close()
+
+# [방법 B] .write() 기능을 이용해 장부에 직접 적기
+b_file = open("수동w.txt", "w", encoding="utf8")
+b_file.write("내용")
+b_file.write("\n내용2") # \n은 줄바꿈(엔터) 기호입니다.
+b_file.close()
+
+
+❷ 자동 방식 (with 문 사용)
+'스마트 책상'을 사용하여 구역을 벗어나면 자동으로 장부가 닫히는 가장 권장되는 방식입니다.
+
+Python
+# [방법 A] with + print 조합
+with open("자동p.txt", "w", encoding="utf8") as c_file:
+    print("내용", file=c_file)
+
+# [방법 B] with + write 조합
+with open("자동w.txt", "w", encoding="utf8") as d_file:
+    d_file.write("내용")
+
+
+
+
+3. 주요 트러블슈팅 및 핵심 요약 🛠️
+ 1)print vs write 차이점
+-print(..., file=장부): 숫자든 문자든 알아서 예쁘게 포장해서 적어줌. (친절한 알바생)
+-.write(): 오직 문자열만 적을 수 있음. 숫자는 str()로 바꿔줘야 함. (깐깐한 기술자)
+
+2)파일 닫기(close)가 왜 중요한가?
+파일을 닫지 않으면 다른 프로그램에서 그 파일을 쓸 수 없거나, 데이터가 손실되는 에러(Troubleshooting 대상)가 발생할 수 있음.
+with 문을 쓰면 이 과정을 자동으로 처리해줘서 안전함.
+
+3)w(쓰기) 모드로 열어놓고 read()를 시도하면 안 됨! 읽고 싶다면 r(읽기) 모드로 다시 열거나, 쓰기 작업이 완전히 끝난 후 처리해야 함.
