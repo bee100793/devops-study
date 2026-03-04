@@ -1,0 +1,49 @@
+📝 2026-03-04 공부 기록: 파일 심화 & 함수(def) 마스터
+1. 파일 이어 쓰기 (a 모드)
+개념: 기존 내용을 지우지 않고 파일의 맨 뒷부분에 내용을 추가할 때 사용. (리눅스의 >>와 같음)
+주의사항: 줄바꿈(\n)을 넣지 않으면 기존 마지막 줄에 글자가 붙어버리니 주의!
+
+Python
+with open("dental_log.txt", "a", encoding="utf8") as file:
+    file.write("11. 오늘 오신 환자분께 콜백 드리기\n")
+
+
+2. 오늘의 트러블슈팅 (에러 해결)
+① TypeError: 'builtin_function_or_method' object is not subscriptable
+원인: file.readlines 뒤에 괄호()를 안 붙여서, 기능을 실행하지 않고 '스위치' 자체를 자르려고 함.
+해결: 반드시 file.readlines()로 호출해서 데이터 리스트를 먼저 가져와야 함.
+
+② UnicodeDecodeError: 'cp949' codec can't decode...
+원인: 파일을 쓸 때는 utf8로 썼는데, 읽을 때 윈도우 기본 설정인 cp949로 읽으려다 충돌 발생.
+해결: 읽기(r) 모드에서도 encoding="utf8"을 반드시 명시해 줄 것.
+
+3. 나만의 함수 만들기 (def)
+개념: 자주 쓰는 코드 뭉치를 하나의 '버튼(명령어)'으로 만드는 것.
+구조: def 함수이름(매개변수1, 매개변수2):
+
+[실습] 범용 tail 함수 (재료 2개 사용)
+Python
+def tail_file(txtname, count):
+    with open(txtname, "r", encoding="utf8") as file:
+        lists = file.readlines()
+        # f-string: 따옴표 앞에 f를 붙여야 {변수}가 실제 값으로 출력됨
+        print(f"\n--- {txtname}의 마지막 {count}줄 확인 ---")
+        for line in lists[-count:]:
+            print(line.strip())
+
+# 사용법 (호출)
+tail_file("dental_log.txt", 3)
+
+
+4. print vs return 차이점
+print: 결과를 화면에 소리 내어 읽어주는 것. (눈으로 확인하고 끝낼 때 사용)
+return: 결과를 종이에 적어서 나(호출자)에게 건네주는 것. (가져온 데이터를 더 계산하거나 가공할 때 필수)
+
+결론: tail은 눈으로 보는 게 목적이므로 함수 안에서 print만 해도 충분함!
+
+💡 핵심 암기 포인트
+변수.함수(): "이 녀석(변수)에게 이 동작(함수)을 실행해!"라는 한 세트 명령어.
+
+설계도 vs 실제 재료:
+def 안의 괄호는 빈 바구니 이름 (따옴표 X)
+호출할 때의 글자 데이터는 진짜 재료 (따옴표 O)
