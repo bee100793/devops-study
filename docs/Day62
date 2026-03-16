@@ -1,0 +1,56 @@
+📝 [DevOps 학습 노트] 인터넷과 소통하기: Requests 모듈 기초
+1. 이론: 외부 도구(Library)와 객체의 이해
+■ 외부 도구 챙기기 (pip install)
+개념: 파이썬 기본 세트에는 없는 기능을 외부에서 사오는 것.
+비유: 파이썬이라는 공장에 **'통신 장비(requests)'**를 들여오는 과정.
+명령어: pip install requests (터미널에서 실행)
+
+■ 속성(Attribute) vs 메서드(Method)
+-속성: 대상이 가지고 있는 정보나 상태 (명사형)
+특징: 점(.)을 찍고 확인하며, 뒤에 괄호()가 붙지 않음.
+예시: response.status_code (배달 상태가 뭐야?)
+
+-메서드: 대상이 할 수 있는 구체적인 기능이나 동작 (동사형)
+특징: 뒤에 반드시 **괄호()**를 붙여서 "실행해!"라고 명령함.
+예시: requests.get() (가져와!), response.json() (변신해!)
+
+2. 실습 코드 (구글 서버와 통신하기)
+Python
+# [단계 1] 무전기 꺼내기
+import requests 
+
+# [단계 2] 구글에게 데이터 요청하기 (메서드 실행)
+# requests라는 도구가 가진 .get() 기능을 사용함
+# 결과물은 'response'라는 상자에 담김
+response = requests.get("https://www.google.com")
+
+# [단계 3] 응답 상자 확인하기 (속성 확인)
+# .status_code라는 '정보' 칸을 읽어옴
+print(f"상태 코드: {response.status_code}")
+
+# [단계 4] 결과 판독하기
+if response.status_code == 200:
+    print("✅ 통신 성공: 구글 서버가 응답했습니다.")
+else:
+    print("❌ 통신 실패: 주소가 틀렸거나 인터넷이 불안정합니다.")
+
+
+
+
+3. 트러블슈팅 (Troubleshooting)
+① ImportError 또는 ModuleNotFoundError
+현상: import requests 부분에서 에러가 남.
+원인: 무전기를 아직 안 사옴(설치를 안 함).
+해결: 터미널에 pip install requests를 다시 입력하고 성공 메시지를 확인해야 함.
+
+② AttributeError: 'NoneType' object has no attribute 'status_code'
+원인: requests.get()이 제대로 실행되지 않아 response 상자가 비어있는데 정보를 보려고 함.
+해결: 접속하려는 주소(https://...)에 오타가 없는지, 인터넷이 연결되어 있는지 확인.
+
+③ 괄호() 유무에 따른 에러
+현상: response.json이라고 썼더니 이상한 문구만 출력됨.
+원인: 메서드(기능)를 실행하려면 괄호를 붙여야 하는데, 이름만 부름.
+해결: 기능을 실행할 때는 반드시 response.json() 처럼 괄호를 붙여야 함.
+
+④ 대소문자와 철자 오타 (가장 흔함!)
+주의: status_code를 stasus_code로 쓰거나, Requests라고 대문자로 쓰면 컴퓨터는 못 알아들음. 항상 소문자와 철자 확인!
