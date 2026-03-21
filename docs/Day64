@@ -1,0 +1,70 @@
+📅 mini_Mission: Python Requests 실전 및 자동 알림 구축
+1. 학습 목표
+requests 라이브러리를 활용한 REST API의 4가지 메서드(GET, POST, PUT, DELETE) 마스터.
+
+f-string을 활용한 효율적인 URL 조립 및 관리 방법 습득.
+
+디스코드 웹훅(Webhook)을 이용한 실시간 작업 완료 알림 자동화.
+
+
+
+2. bee의 최종 완성 코드 (종합 연습 세트)
+이 코드는 데이터 조회 → 생성 → 수정 → 삭제 → 결과 보고의 전체 흐름을 담고 있습니다.
+
+Python
+import requests
+
+# [설정] 공통 주소 및 헤더 (신분증)
+url = "https://jsonplaceholder.typicode.com/posts"
+headers = {"User-Agent": "Mozilla/5.0"}
+discord_url = "https://discordapp.com/api/webhooks/1471497290064855243/e7hpOImKUHNYfJcSZqfqyRVT7SCOGuI7uWoi1ZodXkXRysWFByDB-Dwbd49mlLH2yl7R"
+
+print("🚀 API 종합 테스트를 시작합니다.")
+
+# --- [1] GET: 데이터 가져오기 ---
+res_get = requests.get(f"{url}/1", headers=headers)
+if res_get.status_code == 200:
+    print(f"✅ GET 성공: {res_get.text[0:50]}...")
+
+# --- [2] POST: 새 글 등록하기 ---
+new_data = {"title": "새로운 제목", "body": "새로운 내용", "userId": 1}
+res_post = requests.post(url, headers=headers, data=new_data)
+if res_post.status_code == 201:
+    json_data = res_post.json()
+    print(f"✅ POST 성공! 생성된 ID: {json_data['id']}")
+
+# --- [3] PUT: 데이터 수정하기 ---
+modi_data = {"id": 1, "title": "수정된 제목", "body": "내용 수정 완료", "userId": 1}
+# f-string을 사용해 2번 게시글을 타겟팅
+res_put = requests.put(f"{url}/2", headers=headers, data=modi_data)
+print(f"✅ PUT 결과 코드: {res_put.status_code}")
+
+# --- [4] DELETE: 데이터 삭제하기 ---
+res_del = requests.delete(f"{url}/3", headers=headers)
+print(f"✅ DELETE 결과 코드: {res_del.status_code}")
+
+# --- [5] Discord: 최종 결과 알림 쏘기 ---
+msg = {"content": "📢 [DevOps Mission] requests의 GET, POST, PUT, DELETE 작업이 모두 완수되었습니다!"}
+res_discord = requests.post(discord_url, json=msg)
+
+if res_discord.status_code == 204:
+    print("✅ 디스코드 알림 전송 완료!")
+
+
+3.🛠️ 트러블슈팅: 효율적인 URL 관리
+
+[문제 상황]
+각 메서드(GET, POST, PUT, DELETE)마다 주소를 일일이 변수로 만들거나 전체 주소를 다 타이핑하는 것이 매우 번거롭고 오타 위험이 큼. (특히 태블릿 환경에서 치명적)
+[해결 방안: f-string 활용]
+공통 주소인 base_url을 하나만 선언하고, 실행 시점에 중괄호 {}를 이용해 즉석에서 주소를 조립하는 방식을 도입함.
+기존: url_get = ".../posts/1", url_put = ".../posts/2" (변수 남발)
+개선: requests.get(f"{url}/1") (필요할 때 바로 조립)
+[깨달음]
+주소(URL)는 서버의 '특정 자원'을 가리키는 이정표다. f-string을 쓰면 코드 가독성이 좋아지고, 나중에 대상 번호만 바꾸고 싶을 때 수정이 매우 간편해진다.
+
+
+[질문]
+"연습용 사이트(jsonplaceholder)에서 이미 다 연습했는데, 왜 마지막에 디코로 알림 보낼 때 또 POST를 써야 하지?"
+[분석 및 결론]
+행위의 본질: 디스코드 채팅방에 메시지를 남기는 것은 서버 입장에서 **"새로운 데이터(메시지 객체)를 생성"**하는 행위다. HTTP 규약상 생성을 담당하는 메서드는 POST이므로 이를 따라야 한다.
+서버의 독립성: jsonplaceholder 서버와 Discord 서버는 완전히 남남이다. 연습이 끝났다는 '결과 보고서'를 제출하기 위해 디스코드라는 새로운 공장에 POST라는 주문서를 넣는 과정이 필수적이다.
